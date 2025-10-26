@@ -1,4 +1,4 @@
-from models.menu import Menu # type: ignore
+from models.menu import Menu
 
 def tampilkan_menu(daftar_menu):
     print("\n=== Daftar Menu ===")
@@ -16,7 +16,6 @@ def rekomendasi_menu(daftar_menu, kategori_pilihan):
         print("Maaf, kategori tidak ditemukan.")
 
 def cari_menu_by_harga(daftar_menu, harga_maksimal):
-    """Function tambahan: cari menu berdasarkan harga"""
     hasil = []
     for menu in daftar_menu:
         if menu.harga <= harga_maksimal:
