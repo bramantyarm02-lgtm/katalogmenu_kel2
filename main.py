@@ -70,7 +70,7 @@ def main():
             filename = input("Nama file output (contoh: menu.jsonl): ").strip()
             try:
                 rows = get_all_menu()
-                export_csv(filename, rows)
+                export_jsonl(filename, rows)
                 print(f"Export berhasil ke: {filename}")
             except Exception as e:
                 print(f"Export gagal: {e}")
