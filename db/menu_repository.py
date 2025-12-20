@@ -1,5 +1,19 @@
 from db.database import get_connection
 
+def insert_one(menu):
+    """
+    menu: tuple (nama, kategori, harga)
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO menu (nama, kategori, harga) VALUES (?, ?, ?)",
+        menu
+    )
+    conn.commit()
+    conn.close()
+
+
 def insert_many(menus):
     """
     menus: list of tuple (nama, kategori, harga)

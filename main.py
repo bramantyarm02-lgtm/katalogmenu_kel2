@@ -4,7 +4,7 @@ from services.io_service import export_jsonl, import_jsonl
 
 from data import buat_data_sample
 from db.database import setup_database
-from db.menu_repository import get_all_menu, insert_many, count_menu, delete_all_menu
+from db.menu_repository import get_all_menu, insert_many, insert_one, count_menu, delete_all_menu
 
 def seed_if_empty():
     """
@@ -36,13 +36,13 @@ def main():
         rows = get_all_menu()
         daftar_menu = rows_to_objects(rows)
 
-        print("\n=== Aplikasi Rekomendasi Menu (SQLite3 + JSONL) ===")
+        print("\n=== Aplikasi Rekomendasi Menu ===")
         print("1. Lihat semua menu")
-        print("2. Rekomendasi berdasarkan kategori")
+        print("2. Lihat menu berdasarkan kategori")
         print("3. Cari menu berdasarkan harga")
         print("4. Tambah menu baru (Hanya untuk admin)")
-        print("5. Import menu dari JSONL (Hanya untuk admin)")
-        print("6. Export menu ke JSONL")
+        print("5. Import menu (Hanya untuk admin)")
+        print("6. Export menu")
         print("7. Reset data (hapus semua lalu isi sample)")
         print("8. Keluar")
 
