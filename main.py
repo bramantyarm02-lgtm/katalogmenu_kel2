@@ -26,6 +26,7 @@ def rows_to_objects(rows):
         daftar.append(Menu(nama, kategori, harga))
     return daftar
 
+PASSWORD = "admin123"
 def main():
     setup_database()
     seed_if_empty()
@@ -39,12 +40,13 @@ def main():
         print("1. Lihat semua menu")
         print("2. Rekomendasi berdasarkan kategori")
         print("3. Cari menu berdasarkan harga")
-        print("4. Export menu ke JSONL")
-        print("5. Import menu dari JSONL")
-        print("6. Reset data (hapus semua lalu isi sample)")
-        print("7. Keluar")
+        print("4. Tambah menu baru (Hanya untuk admin)")
+        print("5. Import menu dari JSONL (Hanya untuk admin)")
+        print("6. Export menu ke JSONL")
+        print("7. Reset data (hapus semua lalu isi sample)")
+        print("8. Keluar")
 
-        pilihan = input("Pilih menu (1-7): ").strip()
+        pilihan = input("Pilih menu (1-8): ").strip()
 
         if pilihan == "1":
             tampilkan_menu(daftar_menu)
@@ -67,6 +69,46 @@ def main():
                 print("Input harga harus angka!")
 
         elif pilihan == "4":
+            # Menambahkan menu baru
+            print("\n=== Menu Penambahan Menu Baru ===")
+            password = input("Masukkan password admin untuk melanjutkan: ").strip()
+            if password == PASSWORD:
+                nama = input("Masukkan nama menu baru: ").strip()
+                kategori = input("Masukkan kategori menu (Makanan/Minuman/Dessert): ").strip()
+                try:
+                    harga = int(input("Masukkan harga menu baru: ").strip())
+                    # Memasukkan menu baru ke database
+                    insert_one((nama, kategori, harga))
+                    print(f"Menu '{nama}' berhasil ditambahkan!")
+                except ValueError:
+                    print("Harga harus berupa angka.")
+                except Exception as e:
+                    print(f"Terjadi kesalahan: {e}")
+            else:
+                print("Password salah! Anda tidak memiliki izin untuk menambah menu.")
+
+        elif pilihan == "5":
+            # Import menu dari JSONL
+            print("\n=== Menu Import Menu dari JSONL ===")
+            password = input("Masukkan password admin untuk melanjutkan: ").strip()
+            if password == PASSWORD:
+                filename = input("Nama file input JSONL: ").strip()  # Menggunakan JSONL untuk import
+                try:
+                    menus = import_jsonl(filename)  # Mengimpor dari file JSONL
+                    insert_many(menus)
+                    print(f"Import berhasil. Data ditambahkan: {len(menus)}")
+                except FileNotFoundError:
+                    print(f"File tidak ditemukan: {filename}")
+                except KeyError as e:
+                    print(f"Kolom JSONL tidak sesuai. Kolom yang hilang: {e}")
+                except ValueError:
+                    print("Kolom harga harus angka.")
+                except Exception as e:
+                    print(f"Import gagal: {e}")
+            else:
+                print("Password salah! Anda tidak memiliki izin untuk mengimpor menu.")
+
+        elif pilihan == "6":
             filename = input("Nama file output (contoh: menu.jsonl): ").strip()
             try:
                 rows = get_all_menu()
@@ -75,22 +117,7 @@ def main():
             except Exception as e:
                 print(f"Export gagal: {e}")
 
-        elif pilihan == "5":
-            filename = input("Nama file input JSONL: ").strip()
-            try:
-                menus = import_jsonl(filename)  # (nama,kategori,harga)
-                insert_many(menus)
-                print(f"Import berhasil. Data ditambahkan: {len(menus)}")
-            except FileNotFoundError:
-                print(f"File tidak ditemukan: {filename}")
-            except KeyError as e:
-                print(f"Kolom JSONL tidak sesuai. Kolom yang hilang: {e}")
-            except ValueError:
-                print("Kolom harga harus angka.")
-            except Exception as e:
-                print(f"Import gagal: {e}")
-
-        elif pilihan == "6":
+        elif pilihan == "7":
             konfirmasi = input("Yakin reset? (y/n): ").strip().lower()
             if konfirmasi == "y":
                 delete_all_menu()
@@ -98,8 +125,8 @@ def main():
                 print("Data direset ke data sample.")
             else:
                 print("Batal reset.")
-
-        elif pilihan == "7":
+        
+        elif pilihan == "8":
             print("Terima kasih telah menggunakan aplikasi ini!")
             break
 
