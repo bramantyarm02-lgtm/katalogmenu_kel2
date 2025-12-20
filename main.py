@@ -1,6 +1,6 @@
 from models.menu import Menu
 from services.menu_service import tampilkan_menu, rekomendasi_menu, cari_menu_by_harga
-from services.io_service import export_csv, import_csv
+from services.io_service import export_jsonl, import_jsonl
 
 from data import buat_data_sample
 from db.database import setup_database
@@ -35,12 +35,12 @@ def main():
         rows = get_all_menu()
         daftar_menu = rows_to_objects(rows)
 
-        print("\n=== Aplikasi Rekomendasi Menu (SQLite3 + CSV) ===")
+        print("\n=== Aplikasi Rekomendasi Menu (SQLite3 + JSONL) ===")
         print("1. Lihat semua menu")
         print("2. Rekomendasi berdasarkan kategori")
         print("3. Cari menu berdasarkan harga")
-        print("4. Export menu ke CSV")
-        print("5. Import menu dari CSV")
+        print("4. Export menu ke JSONL")
+        print("5. Import menu dari JSONL")
         print("6. Reset data (hapus semua lalu isi sample)")
         print("7. Keluar")
 
@@ -67,7 +67,7 @@ def main():
                 print("Input harga harus angka!")
 
         elif pilihan == "4":
-            filename = input("Nama file output (contoh: menu.csv): ").strip()
+            filename = input("Nama file output (contoh: menu.jsonl): ").strip()
             try:
                 rows = get_all_menu()
                 export_csv(filename, rows)
@@ -76,15 +76,15 @@ def main():
                 print(f"Export gagal: {e}")
 
         elif pilihan == "5":
-            filename = input("Nama file input CSV: ").strip()
+            filename = input("Nama file input JSONL: ").strip()
             try:
-                menus = import_csv(filename)  # (nama,kategori,harga)
+                menus = import_jsonl(filename)  # (nama,kategori,harga)
                 insert_many(menus)
                 print(f"Import berhasil. Data ditambahkan: {len(menus)}")
             except FileNotFoundError:
                 print(f"File tidak ditemukan: {filename}")
             except KeyError as e:
-                print(f"Kolom CSV tidak sesuai. Kolom yang hilang: {e}")
+                print(f"Kolom JSONL tidak sesuai. Kolom yang hilang: {e}")
             except ValueError:
                 print("Kolom harga harus angka.")
             except Exception as e:

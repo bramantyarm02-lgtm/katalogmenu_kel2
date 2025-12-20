@@ -1,25 +1,32 @@
 import csv
 
-def export_csv(filename, rows):
+def export_jsonl(filename, rows):
     """
     rows: list of (id, nama, kategori, harga) dari database
     """
     with open(filename, "w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(["id", "nama", "kategori", "harga"])
-        writer.writerows(rows)
+        for row in rows:
+            # Mengonversi setiap baris data menjadi dictionary dan menulisnya sebagai JSON
+            json.dump({
+                "id": row[0],
+                "nama": row[1],
+                "kategori": row[2],
+                "harga": row[3]
+            }, f, ensure_ascii=False)
+            f.write("\n")  # Setiap JSON objek pada baris baru
 
-def import_csv(filename):
+def import_jsonl(filename):
     """
     Return: list of (nama, kategori, harga) untuk dimasukkan ke database
-    CSV wajib punya header: nama,kategori,harga (kolom id boleh ada, tapi tidak dipakai)
+    JSONL wajib punya format seperti:
+    {"nama": "Nasi Goreng Spesial", "kategori": "Makanan", "harga": 25000}
     """
     menus = []
     with open(filename, "r", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            nama = row["nama"].strip()
-            kategori = row["kategori"].strip()
-            harga = int(row["harga"])
+        for line in f:
+            data = json.loads(line.strip())  # Mengonversi setiap baris JSONL ke dictionary
+            nama = data["nama"]
+            kategori = data["kategori"]
+            harga = data["harga"]
             menus.append((nama, kategori, harga))
     return menus
