@@ -1,4 +1,4 @@
-import csv
+import json
 
 def export_jsonl(filename, rows):
     """
